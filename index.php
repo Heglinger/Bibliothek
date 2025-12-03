@@ -4,8 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>index</title>
+    <style>
+        #aendern td, tr {
+            border: 1px solid black;
+        }
+        #aendern {
+            border-collapse: collapse;
+        }
+    </style>
 </head>
 <body>
+    <h2>Bücher einschreiben</h2>
 <?php
 $verbindung = mysqli_connect("localhost","root","","Buecherei")
 or die("Verbindungsfehler" . mysqli_connect_error());
@@ -30,5 +39,27 @@ if(isset($_POST["eingabebutton"])){
 }
 
 ?>
+
+<h2>Bücher ändern</h2>
+<form action="" method="post">
+<input type="submit" name="aendern">
+</form>
+<table id="aendern">
+<?php
+if(isset($_POST["aendern"])){
+$verbindung = mysqli_connect("localhost","root","","Buecherei")
+or die("Verbindungsfehler" . mysqli_connect_error());
+
+$sql = "SELECT * FROM t_buecher";
+$ergebnis = mysqli_query($verbindung, $sql);
+while($row = mysqli_fetch_array($ergebnis)){
+    echo "<tr><td>".$row['buchnr']."</td>";
+    echo "<td>".$row['titel']."</td>";
+    echo "<td>".$row['autor']."</td>";
+    echo "<td>".$row['beschreibung']."</td></tr><br>";
+}
+}
+?>
+</table>
 </body>
 </html>
