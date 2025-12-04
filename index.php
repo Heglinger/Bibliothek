@@ -42,7 +42,7 @@ if(isset($_POST["eingabebutton"])){
 
 <h2>Bücher ändern</h2>
 <form action="" method="post">
-<input type="submit" name="aendern">
+<input type="submit" name="aendern" value="Anzeigen">
 </form>
 <table id="aendern">
 <?php
@@ -53,11 +53,35 @@ or die("Verbindungsfehler" . mysqli_connect_error());
 $sql = "SELECT * FROM t_buecher";
 $ergebnis = mysqli_query($verbindung, $sql);
 while($row = mysqli_fetch_array($ergebnis)){
-    echo "<tr><td>".$row['buchnr']."</td>";
-    echo "<td>".$row['titel']."</td>";
-    echo "<td>".$row['autor']."</td>";
-    echo "<td>".$row['beschreibung']."</td></tr><br>";
+    echo "<form action='' method='post'>";
+        
+    echo "<td><input type='hidden' name='buchnr' value='".$row['buchnr']."'></td>";
+    echo "<td><input type='text' id='titelid' name='titel2' value='".$row['titel']."'></td>";
+    echo "<td><input type='text' id='autor' name='autor2' value='".$row['autor']."'></td>";
+    echo "<td><textarea name='beschreibung2' id='beschreibung' placeholder='Beschreibung'>".$row['beschreibung']."</textarea></td>";
+    echo "<td><input type='submit' name='aendernbutton' value='Ändern'></td>";
+    echo "</form></tr>";
+
 }
+    mysqli_close($verbindung);
+}
+if (isset($_POST["aendernbutton"])) {
+    $verbindung = mysqli_connect("localhost","root","","Buecherei") or die(mysqli_connect_error());
+    $buchnr = intval($_POST['buchnr']); // sicherheit: int cast
+    $titel = $_POST["titel2"];
+    $autor = $_POST["autor2"];
+    $beschreibung = $_POST["beschreibung2"];
+
+    // Prepared Statement nutzen
+    $stmt = mysqli_prepare($verbindung, "UPDATE t_buecher SET autor = ?, titel = ?, beschreibung = ? WHERE buchnr = ?");
+    mysqli_stmt_bind_param($stmt, "sssi", $autor, $titel, $beschreibung, $buchnr);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+    mysqli_close($verbindung);
+
+    // Redirect, damit die Seite neu geladen wird (PRG)
+    header("Location: index.php");
+    exit;
 }
 ?>
 </table>
