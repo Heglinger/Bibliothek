@@ -8,7 +8,7 @@
 <body>
 <h1>Anmelden</h1>
 
-<form action="verwaltung.php" method="post">
+<form action="anmeldung.php" method="post">
 <input type="text" id="benutzername" name="benutzername" placeholder="Benutzername" required>
 <br>
 <input type="password" id="passwort" name="passwort" placeholder="Passwort" required>
@@ -21,8 +21,11 @@ $benutzername = $_POST["benutzername"];
 $passwort = $_POST["passwort"];
 $verbindung = mysqli_connect("localhost","root","","buecherei")
 or die(mysqli_connect_error());
-$sql = "SELECT * FROM t_bibliothekare WHERE benutzername = '$benutzername' AND passwort = '$passwort'";
-$ergebnis = mysqli_query($verbindung, $sql);
+$sql = "SELECT * FROM t_bibliothekar WHERE benutzername = ? AND passwort = ?";
+$stmt = mysqli_prepare($verbindung, $sql);
+mysqli_stmt_bind_param($stmt, "ss", $benutzername, $passwort);
+mysqli_stmt_execute($stmt);
+$ergebnis = mysqli_stmt_get_result($stmt);
 if(mysqli_num_rows($ergebnis) != 0){
     header("Location: verwaltung.php");
 } else {

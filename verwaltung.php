@@ -21,7 +21,7 @@ $verbindung = mysqli_connect("localhost","root","","Buecherei")
 or die("Verbindungsfehler" . mysqli_connect_error());
 ?>
 <!-- Formular zum Einschreiben von Büchern -->
-    <form action="index.php" method="post">
+    <form action="verwaltung.php" method="post">
     <input type="text" id="titelid" name="titel" placeholder="Titel" required>
     <br>
     <input type="text" id="autor" name= "autor" placeholder="Autor">
@@ -87,7 +87,7 @@ if (isset($_POST["aendernbutton"])) {
     mysqli_stmt_close($stmt);
     mysqli_close($verbindung);
 
-    header("Location: index.php");
+    header("Location: verwaltung.php");
     exit;
 }
 //Löschen
@@ -102,7 +102,7 @@ if (isset($_POST["loeschenbutton"])) {
     mysqli_stmt_close($stmt);
     mysqli_close($verbindung);
 
-    header("Location: index.php");
+    header("Location: verwaltung.php");
     exit;
 }
 
