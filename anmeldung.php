@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,12 +30,17 @@ mysqli_stmt_bind_param($stmt, "ss", $benutzername, $passwort);
 mysqli_stmt_execute($stmt);
 $ergebnis = mysqli_stmt_get_result($stmt);
 if(mysqli_num_rows($ergebnis) != 0){
+    $_SESSION["angemeldet"] = true;
     header("Location: verwaltung.php");
 } else {
     echo "Falscher Benutzername oder Passwort.";
+    $_SESSION["angemeldet"] = false;
 }
 mysqli_close($verbindung);
 }
 ?>
+
+<a href="index.php">Zur Startseite</a>
+
 </body>
 </html>

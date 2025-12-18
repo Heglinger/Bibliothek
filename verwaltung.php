@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,6 +20,9 @@
 <body>
     <h2>Bücher einschreiben</h2>
 <?php
+if(!isset($_SESSION['angemeldet']) || $_SESSION['angemeldet'] == false){
+    echo "Sie sind nicht angemeldet. <a href='anmeldung.php'>Hier</a> anmelden.";
+}
 $verbindung = mysqli_connect("localhost","root","","Buecherei")
 or die("Verbindungsfehler" . mysqli_connect_error());
 ?>
@@ -32,7 +38,7 @@ or die("Verbindungsfehler" . mysqli_connect_error());
 </form>
 <?php
 // Einfügen der Bücher in die Datenbank
-if(isset($_POST["eingabebutton"])){
+if(isset($_POST["eingabebutton"])&& $_SESSION['angemeldet'] == true){
     $titel = $_POST["titel"];
     $autor = $_POST["autor"];
     $beschreibung = $_POST["beschreibung"];
@@ -50,7 +56,7 @@ if(isset($_POST["eingabebutton"])){
 <table id="aendern">
 <?php
 // Anzeigen der Bücher + Möglichkeit zum Ändern und Löschen
-if(isset($_POST["aendern"])){
+if(isset($_POST["aendern"])&& $_SESSION['angemeldet'] == true){
 $verbindung = mysqli_connect("localhost","root","","Buecherei")
 or die("Verbindungsfehler" . mysqli_connect_error());
 
@@ -67,7 +73,6 @@ while($row = mysqli_fetch_array($ergebnis)){
     echo "<td><input type='submit' name='aendernbutton' value='Ändern'></td>";
     echo "<td><input type='submit' name='loeschenbutton' value='Löschen'></td>";
     echo "</form></tr>";
-
 }
     mysqli_close($verbindung);
 }
@@ -105,9 +110,20 @@ if (isset($_POST["loeschenbutton"])) {
     header("Location: verwaltung.php");
     exit;
 }
-
-
 ?>
+</form>
 </table>
+<p></p>
+
+<!-- Abmelden -->
+<form action="verwaltung.php" method="post">
+<input type="submit" name="abmelden" value="abmelden">
+<?php
+if (isset($_POST["abmelden"])) {
+    session_destroy();
+    header("Location: anmeldung.php");
+    exit;
+}
+?>
 </body>
 </html>
