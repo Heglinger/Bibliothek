@@ -125,5 +125,7 @@ if (isset($_POST["abmelden"])) {
     exit;
 }
 ?>
+<br>
+<a href="index.php">Zur Startseite</a>
 </body>
 </html>
