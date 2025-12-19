@@ -20,6 +20,7 @@ session_start();
 <body>
     <h2>Bücher einschreiben</h2>
 <?php
+
 if(!isset($_SESSION['angemeldet']) || $_SESSION['angemeldet'] == false){
     echo "Sie sind nicht angemeldet. <a href='anmeldung.php'>Hier</a> anmelden.";
 }
@@ -32,6 +33,8 @@ or die("Verbindungsfehler" . mysqli_connect_error());
     <br>
     <input type="text" id="autor" name= "autor" placeholder="Autor">
     <br>
+    <input type="text" id="genre" name="genre" placeholder="Genre">
+    <br>
     <textarea name="beschreibung" id="beschreibung" placeholder="Beschreibung Max 100 Zeichen" required></textarea>
     <br>
     <input type="submit" name="eingabebutton" value="Eingabe">
@@ -41,8 +44,9 @@ or die("Verbindungsfehler" . mysqli_connect_error());
 if(isset($_POST["eingabebutton"])&& $_SESSION['angemeldet'] == true){
     $titel = $_POST["titel"];
     $autor = $_POST["autor"];
+    $genre = $_POST["genre"];
     $beschreibung = $_POST["beschreibung"];
-    $sql = "INSERT INTO t_buecher (autor, titel, beschreibung) VALUES ('$autor', '$titel', '$beschreibung')";
+    $sql = "INSERT INTO t_buecher (autor, titel, genre, beschreibung) VALUES ('$autor', '$titel', '$genre', '$beschreibung')";
     mysqli_query($verbindung, $sql);
     mysqli_close($verbindung);
 }
@@ -68,12 +72,14 @@ while($row = mysqli_fetch_array($ergebnis)){
     echo "<td><input type='hidden' name='buchnr' value='".$row['buchnr']."'></td>";
     echo "<td><input type='text' id='titelid' name='titel2' value='".$row['titel']."'></td>";
     echo "<td><input type='text' id='autor' name='autor2' value='".$row['autor']."'></td>";
+    echo "<td><input type='text' id='genre' name='genre2' value='".$row['genre']."'></td>";
     echo "<td><textarea name='beschreibung2' id='beschreibung' placeholder='Beschreibung'>".$row['beschreibung']."</textarea></td>";
     echo "<td><input type='text' id='ausgeliehen' name='ausgeliehen2' placeholder ='Ausgeliehen an' value='".$row['ausgeliehen']."'></td>";
     echo "<td><input type='submit' name='aendernbutton' value='Ändern'></td>";
     echo "<td><input type='submit' name='loeschenbutton' value='Löschen'></td>";
     echo "</form></tr>";
 }
+
     mysqli_close($verbindung);
 }
 //Ändern
@@ -82,12 +88,13 @@ if (isset($_POST["aendernbutton"])) {
     $buchnr = intval($_POST['buchnr']); 
     $titel = $_POST["titel2"];
     $autor = $_POST["autor2"];
+    $genre = $_POST["genre2"];
     $beschreibung = $_POST["beschreibung2"];
     $ausgeliehen = $_POST["ausgeliehen2"];
 
     // Prepared Statement nutzen
-    $stmt = mysqli_prepare($verbindung, "UPDATE t_buecher SET autor = ?, titel = ?, beschreibung = ?, ausgeliehen = ? WHERE buchnr = ?");
-    mysqli_stmt_bind_param($stmt, "ssssi", $autor, $titel, $beschreibung, $ausgeliehen, $buchnr);
+    $stmt = mysqli_prepare($verbindung, "UPDATE t_buecher SET autor = ?, titel = ?, genre = ?, beschreibung = ?, ausgeliehen = ? WHERE buchnr = ?");
+    mysqli_stmt_bind_param($stmt, "sssssi", $autor, $titel, $genre, $beschreibung, $ausgeliehen, $buchnr);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
     mysqli_close($verbindung);

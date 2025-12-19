@@ -19,6 +19,7 @@ session_start();
 <input type="submit" value="Anmelden" name="anmelden">
 </form>
 <?php
+$_SESSION["angemeldet"] = false;
 if(isset($_POST["anmelden"])){
 $benutzername = $_POST["benutzername"];
 $passwort = $_POST["passwort"];
