@@ -6,17 +6,130 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <title>index</title>
     <style>
-        #aendern td, tr {
-            border: 1px solid black;
-        }
-        #aendern {
-            border-collapse: collapse;
-        }
-        
+ /* Grundlayout */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #eef1f5;
+    color: #2f2f2f;
+    margin: 0;
+    padding: 24px;
+}
+
+/* Überschriften */
+h1, h2 {
+    color: #2c5d8a;
+    margin-bottom: 12px;
+}
+
+/* Formulare */
+form {
+    background-color: #ffffff;
+    padding: 16px;
+    margin-bottom: 24px;
+    border-radius: 8px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    max-width: 750px;
+}
+
+/* Einheitliche Eingabefelder */
+input[type="text"],
+input[type="password"],
+input[type="date"],
+textarea,
+select {
+    width: 100%;
+    padding: 9px;
+    margin: 6px 0 14px 0;
+    border: 1px solid #cfd6df;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    color: #333;
+    background-color: #f9fafb;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: #3a78b5;
+    box-shadow: 0 0 0 2px rgba(58,120,181,0.15);
+    outline: none;
+}
+
+textarea {
+    resize: vertical;
+}
+
+
+/* Buttons allgemein */
+input[type="submit"] {
+    background-color: #3a78b5;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+input[type="submit"]:hover {
+    background-color: #2c5d8a;
+    transform: translateY(-1px);
+}
+
+/* Löschen-Button */
+input[name="loeschenbutton"] {
+    background-color: #c0392b;
+}
+
+input[name="loeschenbutton"]:hover {
+    background-color: #a93226;
+}
+
+/* Tabelle */
+#aendern {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#aendern td,
+#aendern th {
+    border: 1px solid #e0e6ed;
+    padding: 8px;
+    font-size: 14px;
+}
+
+#aendern tr:nth-child(even) {
+    background-color: #f5f7fa;
+}
+
+/* Links */
+a {
+    color: #3a78b5;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
     </style>
 </head>
+<!-- Bootstrap 5 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 <body>
     <h2>Bücher einschreiben</h2>
 <?php
@@ -74,10 +187,12 @@ while($row = mysqli_fetch_array($ergebnis)){
     echo "<td><input type='text' id='autor' name='autor2' value='".$row['autor']."'></td>";
     echo "<td><input type='text' id='genre' name='genre2' value='".$row['genre']."'></td>";
     echo "<td><textarea name='beschreibung2' id='beschreibung' placeholder='Beschreibung'>".$row['beschreibung']."</textarea></td>";
-    echo "<td><input type='text' id='ausgeliehen' name='ausgeliehen2' placeholder ='Ausgeliehen an' value='".$row['ausgeliehen']."'></td>";
+    echo "<td><input type='text' id='ausgeliehen' name='ausgeliehen2' placeholder ='Ausgeliehen an:' value='".$row['ausgeliehen']."'></td>";
+    echo "<td><input type='text' name='ausleihdatum' placeholder='Ausleihdatum' value='".$row['ausleihdatum']."'></td>";
     echo "<td><input type='submit' name='aendernbutton' value='Ändern'></td>";
     echo "<td><input type='submit' name='loeschenbutton' value='Löschen'></td>";
-    echo "</form></tr>";
+    echo "</form>";
+    echo "</tr>";
 }
 
     mysqli_close($verbindung);
@@ -91,10 +206,11 @@ if (isset($_POST["aendernbutton"])) {
     $genre = $_POST["genre2"];
     $beschreibung = $_POST["beschreibung2"];
     $ausgeliehen = $_POST["ausgeliehen2"];
+    $ausleihdatum = $_POST["ausleihdatum"];
 
     // Prepared Statement nutzen
-    $stmt = mysqli_prepare($verbindung, "UPDATE t_buecher SET autor = ?, titel = ?, genre = ?, beschreibung = ?, ausgeliehen = ? WHERE buchnr = ?");
-    mysqli_stmt_bind_param($stmt, "sssssi", $autor, $titel, $genre, $beschreibung, $ausgeliehen, $buchnr);
+    $stmt = mysqli_prepare($verbindung, "UPDATE t_buecher SET autor = ?, titel = ?, genre = ?, beschreibung = ?, ausgeliehen = ?, ausleihdatum = ? WHERE buchnr = ?");
+    mysqli_stmt_bind_param($stmt, "ssssssi", $autor, $titel, $genre, $beschreibung, $ausgeliehen, $ausleihdatum, $buchnr);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
     mysqli_close($verbindung);
